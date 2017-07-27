@@ -1,12 +1,11 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using System.Text;
 
-namespace Academy.HoloToolkit.Unity
+namespace HoloToolkit.Unity.InputModule
 {
     public class MicStream
     {
@@ -163,10 +162,10 @@ namespace Academy.HoloToolkit.Unity
             switch (returnCode)
             {
                 case (int)ErrorCodes.ALREADY_RECORDING:
-                    Debug.LogError("WARNING: Tried to start recording when you were already doing so. You need to stop your previous recording before you can start again.");
+                    Debug.LogWarning("WARNING: Tried to start recording when you were already doing so. You need to stop your previous recording before you can start again.");
                     return false;
                 case (int)ErrorCodes.ALREADY_RUNNING:
-                    Debug.LogError("WARNING: Tried to initialize microphone more than once");
+                    Debug.LogWarning("WARNING: Tried to initialize microphone more than once");
                     return false;
                 case (int)ErrorCodes.GRAPH_NOT_EXIST:
                     Debug.LogError("ERROR: Tried to do microphone things without a properly initialized microphone. \n Do you have a mic plugged into a functional audio system and did you call MicInitialize() before anything else ??");

@@ -3,7 +3,7 @@
 
 using UnityEngine;
 
-namespace Academy.HoloToolkit.Unity
+namespace HoloToolkit.Unity
 {
     /// <summary>
     /// A Tagalong that extends SimpleTagalong that allows for specifying the

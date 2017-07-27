@@ -3,7 +3,7 @@
 
 using UnityEngine;
 
-namespace Academy.HoloToolkit.Unity
+namespace HoloToolkit.Unity
 {
     /// <summary>
     /// A Tagalong that stays at a fixed distance from the camera and always
@@ -16,6 +16,9 @@ namespace Academy.HoloToolkit.Unity
 
         [Tooltip("How fast the object will move to the target position.")]
         public float MoveSpeed = 2.0f;
+
+        [Tooltip("When moving, use unscaled time. This is useful for games that have a pause mechanism or otherwise adjust the game timescale.")]
+        public bool UseUnscaledTime = true;
 
         [Tooltip("Display the sphere in red wireframe for debugging purposes.")]
         public bool DebugDisplaySphere = false;
@@ -40,7 +43,12 @@ namespace Academy.HoloToolkit.Unity
             if (offsetDir.magnitude > SphereRadius)
             {
                 targetPosition = optimalPosition + offsetDir.normalized * SphereRadius;
-                this.transform.position = Vector3.Lerp(this.transform.position, targetPosition, MoveSpeed * Time.deltaTime);
+
+                float deltaTime = UseUnscaledTime
+                    ? Time.unscaledDeltaTime
+                    : Time.deltaTime;
+
+                this.transform.position = Vector3.Lerp(this.transform.position, targetPosition, MoveSpeed * deltaTime);
             }
         }
 

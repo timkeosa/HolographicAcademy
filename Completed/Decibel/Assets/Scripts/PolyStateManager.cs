@@ -1,4 +1,4 @@
-﻿using Academy.HoloToolkit.Unity;
+﻿using HoloToolkit.Unity;
 using UnityEngine;
 
 public class PolyStateManager : Singleton<PolyStateManager>
@@ -51,8 +51,9 @@ public class PolyStateManager : Singleton<PolyStateManager>
     public PolyStates State 
     { get; private set; }
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         GoIdle();
     }
 

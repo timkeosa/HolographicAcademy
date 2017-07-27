@@ -1,6 +1,6 @@
-﻿using Academy.HoloToolkit.Unity;
+﻿using HoloToolkit.Unity;
 using UnityEngine;
-using UnityEngine.VR.WSA;
+
 
 [RequireComponent(typeof(AudioSource))]
 public class EnergyHubBase : Singleton<EnergyHubBase>
@@ -18,7 +18,7 @@ public class EnergyHubBase : Singleton<EnergyHubBase>
     {
         if (IsTargetVisible())
         {
-            HolographicSettings.SetFocusPointForFrame(gameObject.transform.position, -Camera.main.transform.forward);
+            UnityEngine.XR.WSA.HolographicSettings.SetFocusPointForFrame(gameObject.transform.position, -Camera.main.transform.forward);
         }
     }
 

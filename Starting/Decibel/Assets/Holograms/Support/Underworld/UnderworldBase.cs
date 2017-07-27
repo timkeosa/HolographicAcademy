@@ -1,8 +1,11 @@
-﻿using Academy.HoloToolkit.Unity;
+﻿using HoloToolkit.Unity;
+using HoloToolkit.Unity.InputModule;
+using HoloToolkit.Unity.SpatialMapping;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
-public class UnderworldBase : Singleton<UnderworldBase>
+public class UnderworldBase : Singleton<UnderworldBase>, ISpeechHandler
 {
     public List<GameObject> ObjectsToHide = new List<GameObject>();
 
@@ -12,9 +15,9 @@ public class UnderworldBase : Singleton<UnderworldBase>
         if (GazeManager.Instance)
         {
             // Exclude the NavPath layer (used for UnderDrone navigation) from GazeManager raycasts.
-            var navLayer = LayerMask.NameToLayer("NavPath");
-            var ignoreNavLayerMask = ~(1 << navLayer);
-            GazeManager.Instance.RaycastLayerMask = GazeManager.Instance.RaycastLayerMask & ignoreNavLayerMask;
+            var navLayerMask = LayerMask.GetMask("NavPath");
+            var nonNavMask = Physics.DefaultRaycastLayers & ~navLayerMask;
+            GazeManager.Instance.RaycastLayerMasks = new LayerMask[] { nonNavMask };
         }
     }
 
@@ -40,7 +43,7 @@ public class UnderworldBase : Singleton<UnderworldBase>
     }
     
     /// <summary>
-    /// Places the underworld at the user's gaze and makles it visible.
+    /// Places the underworld at the user's gaze and makes it visible.
     /// </summary>
     private void PlaceUnderworld()
     {
@@ -98,5 +101,19 @@ public class UnderworldBase : Singleton<UnderworldBase>
         return (targetViewportPosition.x > 0.0 && targetViewportPosition.x < 1 &&
             targetViewportPosition.y > 0.0 && targetViewportPosition.y < 1 &&
             targetViewportPosition.z > 0);
+    }
+
+    public void OnSpeechKeywordRecognized(SpeechKeywordRecognizedEventData eventData)
+    {
+        switch (eventData.RecognizedText)
+        {
+            case "Show Underworld":
+                OnEnable();
+                break;
+
+            case "Hide Underworld":
+                OnDisable();
+                break;
+        }
     }
 }

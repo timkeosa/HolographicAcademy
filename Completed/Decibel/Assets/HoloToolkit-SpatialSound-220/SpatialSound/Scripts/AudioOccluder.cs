@@ -4,7 +4,7 @@
 using System;
 using UnityEngine;
 
-namespace Academy.HoloToolkit.Unity
+namespace HoloToolkit.Unity
 {
     /// <summary>
     /// Class that implements IAudioInfluencer to provide an occlusion effect.

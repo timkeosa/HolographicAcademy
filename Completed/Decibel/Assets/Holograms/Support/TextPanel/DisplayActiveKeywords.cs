@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-using Academy.HoloToolkit.Unity;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HoloToolkit.Unity.InputModule;
 
 /// <summary>
 /// Shows the list of available voice commands on the KeywordManager.cs script.
@@ -15,8 +15,7 @@ public class DisplayActiveKeywords : MonoBehaviour
     string originalText = string.Empty;
     StringBuilder sb = new StringBuilder();
 
-    KeywordManager[] keywordManagers;
-    Dictionary<string, UnityEvent> responsesLookup;
+    SpeechInputSource[] keywordSources;
 
     void Start()
     {
@@ -24,8 +23,8 @@ public class DisplayActiveKeywords : MonoBehaviour
         originalText = textComponent.text;
 
         // Find the KeywordManager scripts.
-        keywordManagers = FindObjectsOfType<KeywordManager>();
-        if (keywordManagers == null)
+        keywordSources = FindObjectsOfType<SpeechInputSource>();
+        if (keywordSources == null)
         {
             Debug.LogError("Could not find KeywordManager.cs anywhere.");
             return;
@@ -36,28 +35,20 @@ public class DisplayActiveKeywords : MonoBehaviour
         sb.AppendLine(originalText);
 
         // Ensure we display active commands on all keyword managers.
-        foreach (KeywordManager keywordManager in keywordManagers)
+        foreach (var keySource in keywordSources)
         {
-            AddActiveKeywords(keywordManager);
+            AddActiveKeywords(keySource);
         }
 
         textComponent.text = sb.ToString();
     }
 
-    private void AddActiveKeywords(KeywordManager keywordManager)
+    private void AddActiveKeywords(SpeechInputSource keywordSource)
     {
-        // Convert the struct array into a dictionary, with the keywords as the keys and the methods as the values.
-        responsesLookup = keywordManager.KeywordsAndResponses.ToDictionary(
-            keywordAndResponse => keywordAndResponse.Keyword,
-            keywordAndResponse => keywordAndResponse.Response);
-
-        // Find which keywords have wired up responses in the editor and display only those.
-        foreach (string keyword in responsesLookup.Keys)
+        // Extract the Keywords within this source and append to the output text string
+        foreach (var keyword in keywordSource.Keywords)
         {
-            if (responsesLookup[keyword].GetPersistentEventCount() != 0)
-            {
-                sb.AppendLine(keyword);
-            }
+            sb.AppendLine(keyword.Keyword);
         }        
     }
 }

@@ -3,7 +3,7 @@
 
 using UnityEngine;
 
-namespace Academy.HoloToolkit.Unity
+namespace HoloToolkit.Unity
 {
     /// <summary>
     /// Interface that is implemented by any class that wishes to influence how an audio source sounds.

@@ -1,9 +1,11 @@
-﻿using Academy.HoloToolkit.Unity;
+﻿using HoloToolkit.Unity;
+using HoloToolkit.Unity.InputModule;
 using System.Collections;
 using UnityEngine;
+using System;
 
 [RequireComponent(typeof(Interpolator))]
-public class PolyActions : MonoBehaviour
+public class PolyActions : MonoBehaviour, IInputClickHandler, ISpeechHandler
 {
     [Tooltip("The speed at which POLY is to move.")]
     [Range(5.0f, 60.0f)]
@@ -45,7 +47,7 @@ public class PolyActions : MonoBehaviour
     /// <summary>
     /// Calls P0ly to the point at which the user is gazing.
     /// </summary>
-    public void ComeBack()
+    private void ComeBack()
     {
         PolyStateManager.Instance.SetState(PolyStateManager.PolyStates.Returning);
         
@@ -55,7 +57,7 @@ public class PolyActions : MonoBehaviour
     /// <summary>
     /// Sends P0ly to the charging box.
     /// </summary>
-    public void GoCharge()
+    private void GoCharge()
     {
         if (PolyStateManager.Instance.State == PolyStateManager.PolyStates.Charging) { return; }
 
@@ -65,9 +67,9 @@ public class PolyActions : MonoBehaviour
     }
 
     /// <summary>
-    /// Called when the Select Gesture is detected. Instructs P0ly to hide.
+    /// Instructs P0ly to hide.
     /// </summary>
-    public void OnSelect()
+    private void GoHide()
     {
         if (PolyStateManager.Instance.State == PolyStateManager.PolyStates.Hiding) { return; }
 
@@ -76,5 +78,34 @@ public class PolyActions : MonoBehaviour
         
         interpolator.PositionPerSecond = MoveSpeed;
         interpolator.SetTargetPosition(PolyStateManager.Instance.Destination);
+    }
+
+    /// <summary>
+    /// P0ly will Go Hide when selected
+    /// </summary>
+    public void OnInputClicked(InputClickedEventData eventData)
+    {
+        GoHide();
+    }
+
+    /// <summary>
+    /// Handle P0ly speech commands
+    /// </summary>
+    public void OnSpeechKeywordRecognized(SpeechKeywordRecognizedEventData eventData)
+    {
+        switch (eventData.RecognizedText)
+        {
+            case "Go Charge":
+                GoCharge();
+                break;
+
+            case "Come Here":
+                ComeBack();
+                break;
+
+            case "Go Hide":
+                GoHide();
+                break;
+        }
     }
 }
